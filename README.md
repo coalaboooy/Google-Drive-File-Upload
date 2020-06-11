@@ -9,9 +9,10 @@ googleapiclient - https://pypi.org/project/google-api-python-client/
 google_auth_oauthlib - https://pypi.org/project/google-auth-oauthlib/  
 google.auth - https://pypi.org/project/google-auth/  
 apiclient - https://pypi.org/project/apiclient/  
-Also make sure your io, pickle and os.path modules are working properly.\
+Also make sure your io, pickle, tkinter and os.path modules are working properly.\
 \
-Place the 'credentials.json' file you downloaded and the file you want to upload to the
-directory in which script is, run the script and follow instructions.\
+Place the 'credentials.json' file you downloaded to the directory in which script is,
+run the script and follow instructions.\
 \
-Currently working on feature to select file from dialog window.
+Added feature of selecting file from dialog window, now it is possible to choose any file
+from any directory.

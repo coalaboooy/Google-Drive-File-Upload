@@ -7,6 +7,8 @@ from apiclient.http import MediaFileUpload,MediaIoBaseDownload
 import io
 import pickle
 import os.path
+import tkinter as tk
+from tkinter import filedialog
 
 #establish connection and authorize, returns drive API object
 def login():
@@ -72,39 +74,51 @@ def update (drive_service, filename):
         print('Succesfully updated file!')
 
 #basically an user interface
-#TODO: make it a dialog window, not cmd
 def work(serv):
-    print('If you want to stop, type \'quit\'')
+    print('If you want to quit application, type \'quit\' now. Anything else to continue.')
     if input().lower() == 'quit':
         return 1
-    print("Choose the file from a current directory by typing its name and extension:")
-    name = input()
-    while not os.path.exists(name):
-        print('There is no such file in the current directory')
-        name = input()
+    #creating tkinter root to create file dialog window
+    root = tk.Tk()
+    root.withdraw()
+    file_path = filedialog.askopenfilename()
+    #and disposing of root so it can be opened again later
+    root.destroy()
+    if file_path == '':
+        print('You haven\'t selected the file')
+        return 0
     print('Do you want to upload or update the file? Type the corresponding number:')
     print('1 - Upload. Use this if there is no file with this name, as it will dulicate the existing ones')
     print('2 - Update. Use this if you already have file with the same name')
-    option = int(input())
-    while option != 1 and option != 2:
-        print('Wrong option number entered')
-        option = int(input())
+    option = option_input()
     if option == 1:
         func = upload
     elif option == 2:
         func = update
-    print(f'File {name} will be ', 'uploaded' if option == 1 else 'updated',
+    print(f'File {file_path} will be ', 'uploaded' if option == 1 else 'updated',
           ', are you sure about that?\nY/N', sep='')
     answer = input().upper()
     while answer != 'Y' and answer != 'N':
         print('Y/N?\n')
         answer = input().upper()
     if answer == 'Y':
-        func(serv, name)
+        func(serv, file_path)
     elif answer == 'N':
-        print('You\'ll have to enter everything again')
+        print('The changes were not applied')
     return 0
 
+#auxiliary function so I don't have to deal with exceptions in work functionn
+def option_input():
+    try:
+        option = int(input())
+        while option != 1 and option != 2:
+            print('Wrong option number entered')
+            option = int(input())
+        return option
+    except ValueError:
+        print('Wrong entry, use listed numbers')
+        return option_input()
+        
 #the main()
 serv = login()
 while work(serv) == 0:
