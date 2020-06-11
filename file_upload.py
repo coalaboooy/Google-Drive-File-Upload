@@ -12,7 +12,7 @@ from tkinter import filedialog
 
 #establish connection and authorize, returns drive API object
 def login():
-    SCOPES = 'https://www.googleapis.com/auth/drive.file'
+    SCOPES = ['https://www.googleapis.com/auth/drive.file']
     creds = None
     #token.pickle used for storing your auth data
     #so you don't need to relogin every time
@@ -33,14 +33,14 @@ def login():
 
 #uploads the chosen file to the drive
 #this function uses as little as possible metadata so it won't mess up anything
-def upload(drive_service, filename):
+def upload(drive_service, filepath):
     #creating metadata
     file_metadata = {
-        'name': filename,
+        'name': filepath.split('/')[-1],
         'mimeType': '*/*'
         }
     #creating file content using MediaFileUpload instance
-    media = MediaFileUpload(filename,
+    media = MediaFileUpload(filepath,
                             mimetype='*/*',
                             resumable=True)
     #creating the file on disk
@@ -51,9 +51,9 @@ def upload(drive_service, filename):
 
 #updating existing file on disk
 #doing pretty much the same as what upload function does
-def update (drive_service, filename):
+def update (drive_service, filepath):
     #searching for the file on disk
-    results = drive_service.files().list(q=f"name='{filename}'",
+    results = drive_service.files().list(q=f"name='{filepath.split('/')[-1]}'",
                                    fields='nextPageToken, files(id)').execute()
     if not results.get('files'):
         print('No files found on drive')
@@ -63,10 +63,10 @@ def update (drive_service, filename):
         print('More than one file found on drive')
     else:
         file_metadata = {
-        'name': filename,
+        'name': filepath.split('/')[-1],
         'mimeType': '*/*'
         }
-        media = MediaFileUpload(filename,
+        media = MediaFileUpload(filepath,
                                 mimetype='*/*',
                                 resumable=True)
         drive_service.files().update(fileId=list(list(results.values())[0][0].values())[0],
@@ -75,7 +75,7 @@ def update (drive_service, filename):
 
 #basically an user interface
 def work(serv):
-    print('If you want to quit application, type \'quit\' now. Anything else to continue.')
+    print('\nIf you want to quit application, type \'quit\' now. Anything else to continue.')
     if input().lower() == 'quit':
         return 1
     #creating tkinter root to create file dialog window
