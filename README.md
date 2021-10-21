@@ -1,5 +1,7 @@
 This python script lets you upload or update chosen file to your Google Drive.\
 \
+There is a version without an interface, it works by executing script from your terminal with a path to file next to it. Does not require tkinter module.\
+If your filepath contains spaces, place it in the double qoutation marks (")\
 To run it, you'll first need to download 'credentials.json' file, which you can do here:\
 https://developers.google.com/drive/api/v3/quickstart/python  
 \
